@@ -14,6 +14,20 @@
     pointer-events: none; /* Mouse Click များကို အရှေ့က စာသားများဆီ တိုက်ရိုက် ရောက်စေရန် */
     z-index: -1;          /* 💥 အဓိကပြင်ရမယ့်နေရာ: တန်ဖိုးကို -1 သို့ ပြောင်းပါ */
 }
+.moving-text {
+    display: inline-block;
+    animation: moveLeftRight 2s infinite alternate ease-in-out;
+}
+
+/* ဘယ်ညာ သွားလာနေမည့် Animation */
+@keyframes moveLeftRight {
+    0% {
+        transform: translateX(-15px); /* ဘယ်ဘက်သို့ ၁၅ pixel ရောက်မည် */
+    }
+    100% {
+        transform: translateX(15px);  /* ညာဘက်သို့ ၁၅ pixel ရောက်မည် */
+    }
+}
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
