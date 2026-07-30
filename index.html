@@ -80,8 +80,8 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     const petalCount = 100;
-    const geometry = new THREE.PlaneGeometry(0.3, 0.5);
-
+      // စက်ဝိုင်းပုံ နှင်းစက်လေးများ (Sphere/Circle)
+    const geometry = new THREE.SphereGeometry(0.1, 8, 8);
     const pos = geometry.attributes.position;
     for (let i = 0; i < pos.count; i++) {
         let z = Math.sin((pos.getY(i) + 0.25) * Math.PI) * 0.1;
@@ -89,9 +89,9 @@
     }
     geometry.computeVertexNormals();
 
+    // အဖြူရောင် နှင်းစက်များ (White Snow)
     const material = new THREE.MeshBasicMaterial({
-        color: 0xffb7c5,
-        side: THREE.DoubleSide,
+        color: 0xff0000, // အဖြူရောင်
         transparent: true,
         opacity: 0.8
     });
