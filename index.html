@@ -7,16 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-/* 3D Canvas ကို Background အဖြစ် ထားရှိခြင်း */
-#petal-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none; /* Mouse Click များကို အရှေ့က စာသားများဆီ တိုက်ရိုက် ရောက်စေရန် */
-    z-index: -1;          /* အနောက်ဆုံး အလွှာမှာ ထားရန် */
-}
+<canvas id="petal-canvas"></canvas>
     <!-- Header Section -->
     <header>
         <div class="container">
@@ -75,6 +66,85 @@
     <footer>
         <p>&copy; 2026 Aung Aung. All rights reserved.</p>
     </footer>
+<!-- Three.js Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
+<!-- 3D Petals Animation Script -->
+<script>
+    const canvas = document.getElementById('petal-canvas');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const petalCount = 100;
+    const geometry = new THREE.PlaneGeometry(0.3, 0.5);
+
+    const pos = geometry.attributes.position;
+    for (let i = 0; i < pos.count; i++) {
+        let z = Math.sin((pos.getY(i) + 0.25) * Math.PI) * 0.1;
+        pos.setZ(i, z);
+    }
+    geometry.computeVertexNormals();
+
+    const material = new THREE.MeshBasicMaterial({
+        color: 0xffb7c5,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.8
+    });
+
+    const petals = [];
+    for (let i = 0; i < petalCount; i++) {
+        const petal = new THREE.Mesh(geometry, material);
+        
+        petal.position.x = (Math.random() - 0.5) * 20;
+        petal.position.y = Math.random() * 20 - 10;
+        petal.position.z = (Math.random() - 0.5) * 15;
+
+        petal.rotation.x = Math.random() * Math.PI;
+        petal.rotation.y = Math.random() * Math.PI;
+
+        petal.userData = {
+            speedY: Math.random() * 0.02 + 0.01,
+            speedX: (Math.random() - 0.5) * 0.005,
+            rotSpeedX: Math.random() * 0.02,
+            rotSpeedY: Math.random() * 0.02
+        };
+
+        scene.add(petal);
+        petals.push(petal);
+    }
+
+    camera.position.z = 8;
+
+    function animate() {
+        requestAnimationFrame(animate);
+
+        petals.forEach(p => {
+            p.position.y -= p.userData.speedY;
+            p.position.x += Math.sin(p.position.y) * 0.005 + p.userData.speedX;
+            p.rotation.x += p.userData.rotSpeedX;
+            p.rotation.y += p.userData.rotSpeedY;
+
+            if (p.position.y < -10) {
+                p.position.y = 10;
+                p.position.x = (Math.random() - 0.5) * 20;
+            }
+        });
+
+        renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+</script>
 </body>
 </html>
