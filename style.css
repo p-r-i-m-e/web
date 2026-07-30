@@ -19,6 +19,10 @@ body {
     line-height: 1.6;
     background-color: #000000;
     color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
 }
 
 .container {
@@ -89,6 +93,7 @@ nav ul li a:hover {
 
 /* Main Posts Grid */
 main {
+    flex: 1;
     margin-top: 40px;
     margin-bottom: 40px;
 }
@@ -141,8 +146,8 @@ main {
 footer {
     text-align: center;
     padding: 20px;
-    background-color: #ffffff;
-    border-top: 1px solid #e0e0e0;
-    color: #777;
+    background-color: #111111;
+    border-top: 1px solid #333333;
+    color: #888888;
     font-size: 0.9rem;
 }
