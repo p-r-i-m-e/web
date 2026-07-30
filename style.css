@@ -4,7 +4,16 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+/* 3D Canvas ကို Background အဖြစ် ထားရှိခြင်း */
+#petal-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none; /* Mouse Click များကို အရှေ့က စာသားများဆီ တိုက်ရိုက် ရောက်စေရန် */
+    z-index: -1;          /* အနောက်ဆုံး အလွှာမှာ ထားရန် */
+}
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
