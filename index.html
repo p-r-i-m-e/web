@@ -7,7 +7,16 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
+/* 3D Canvas ကို Background အဖြစ် ထားရှိခြင်း */
+#petal-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none; /* Mouse Click များကို အရှေ့က စာသားများဆီ တိုက်ရိုက် ရောက်စေရန် */
+    z-index: -1;          /* အနောက်ဆုံး အလွှာမှာ ထားရန် */
+}
     <!-- Header Section -->
     <header>
         <div class="container">
