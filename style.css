@@ -48,7 +48,9 @@ header .container {
 
 .logo {
     font-size: 1.5rem;
-    color: #2c3e50;
+    color: #ffffff;
+    font-weight: 600;
+    transition: color 0.3s;
 }
 
 nav ul {
