@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Feng Yuan's Blog</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome Icons များသုံးရန် Link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Contact Page အတွက် သီးသန့် CSS များ */
+        .contact-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .contact-title {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .contact-subtitle {
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .contact-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .contact-card {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 12px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-3px);
+            border-color: #00d2ff;
+            background-color: #252525;
+            box-shadow: 0 5px 15px rgba(0, 210, 255, 0.2);
+        }
+
+        .contact-card i {
+            font-size: 1.5rem;
+            margin-right: 20px;
+            width: 30px;
+            text-align: center;
+        }
+
+        /* Icon သီးသန့် အရောင်များ */
+        .fa-envelope { color: #ea4335; } /* Gmail Red */
+        .fa-phone { color: #34a853; }    /* Phone Green */
+        .fa-tiktok { color: #ff0050; }   /* TikTok Pink/Red */
+        .fa-telegram { color: #0088cc; } /* Telegram Blue */
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Header -->
+    <header>
+        <div class="container">
+            <h1 class="logo">Feng Yuan's Blog</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Contact Content -->
+    <main>
+        <div class="contact-container">
+            <h2 class="contact-title">Contact Me (အရေးကြီးမှဆက်သွယ်ရန်) </h2>
+            <p class="contact-subtitle">အောက်ပါ Social Media များမှတစ်ဆင့် ဆက်သွယ်နိုင်ပါသည်။</p>
+
+            <div class="contact-grid">
+                
+                <!-- ✉️ Gmail Link -->
+                <a href="mailto:zaw692897@gmail.com" class="contact-card" target="_blank">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span>Gmail မှ ဆက်သွယ်ရန်</span>
+                </a>
+
+                <!-- 📞 Phone Number Link -->
+                <a href="tel:09123456789" class="contact-card">
+                    <i class="fa-solid fa-phone"></i>
+                    <span>09 123 456 789 ကို ဖုန်းခေါ်ရန်</span>
+                </a>
+
+                <!-- 🎵 TikTok Link -->
+                <a href="https://www.tiktok.com/@fengyuan001" class="contact-card" target="_blank">
+                    <i class="fa-brands fa-tiktok"></i>
+                    <span>TikTok Account သို့ သွားရန်</span>
+                </a>
+
+                <!-- ✈️ Telegram Link -->
+                <a href="https://t.me/Nannwaiyan" class="contact-card" target="_blank">
+                    <i class="fa-brands fa-telegram"></i>
+                    <span>Telegram မှ စာပို့ရန်</span>
+                </a>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Feng Yuan. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
