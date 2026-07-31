@@ -160,7 +160,7 @@ const snakeBody = [];
 const headGroup = new THREE.Group();
 
 // 🐍 သဘာဝကျသော မြွေခေါင်း ပုံစံ (V-Shape Snake Head)
-const headGeo = new THREE.SphereGeometry(0.24, 16, 16);
+const headGeo = new THREE.SphereGeometry(0.1, 16, 16);
 headGeo.scale(1.1, 0.6, 1.6); // အရှေ့ချွန်ပြီး ပါးစပ်ဘက် ပြားသော ပုံစံ
 const headMat = new THREE.MeshBasicMaterial({ color: 0xa855f7 });
 const headMesh = new THREE.Mesh(headGeo, headMat);
@@ -173,23 +173,23 @@ const pupilMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
 
 // ဘယ် မျက်လုံး
 const leftEye = new THREE.Mesh(eyeGeo, redEyeMat);
-leftEye.position.set(-0.13, 0.08, 0.12);
+leftEye.position.set(-0.05, 0.03, 0.06);
 const leftPupil = new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 8), pupilMat);
-leftPupil.position.set(-0.14, 0.08, 0.15);
+leftPupil.position.set(-0.06, 0.03, 0.08);
 
 // ညာ မျက်လုံး
 const rightEye = new THREE.Mesh(eyeGeo, redEyeMat);
-rightEye.position.set(0.13, 0.08, 0.12);
+rightEye.position.set(0.05, 0.03, 0.06);
 const rightPupil = new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 8), pupilMat);
-rightPupil.position.set(0.14, 0.08, 0.15);
+rightPupil.position.set(0.06, 0.03, 0.08);
 
 headGroup.add(leftEye, leftPupil, rightEye, rightPupil);
 scene.add(headGroup);
 snakeBody.push(headGroup);
 
 // မြွေကိုယ်ထည်
-const bodyGeometry = new THREE.SphereGeometry(0.13, 16, 16);
-const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0xa855f7 });
+const bodyGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+const bodyMaterial = new THREE.MeshBasicMaterial({ color: #ffd700 });
 
 for (let i = 1; i < segmentCount; i++) {
     const mesh = new THREE.Mesh(bodyGeometry, bodyMaterial);
