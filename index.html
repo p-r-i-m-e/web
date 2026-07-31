@@ -162,7 +162,7 @@ const headGroup = new THREE.Group();
 // 🐍 သဘာဝကျသော မြွေခေါင်း ပုံစံ (V-Shape Snake Head)
 const headGeo = new THREE.SphereGeometry(0.1, 16, 16);
 headGeo.scale(1.1, 0.6, 1.6); // အရှေ့ချွန်ပြီး ပါးစပ်ဘက် ပြားသော ပုံစံ
-const headMat = new THREE.MeshBasicMaterial({ color: 0xa855f7 });
+const headMat = new THREE.MeshBasicMaterial({ color: 0x00f3ff });
 const headMesh = new THREE.Mesh(headGeo, headMat);
 headGroup.add(headMesh);
 
@@ -189,7 +189,7 @@ snakeBody.push(headGroup);
 
 // မြွေကိုယ်ထည်
 const bodyGeometry = new THREE.SphereGeometry(0.05, 16, 16);
-const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0xffd700 });
+const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0x00f3ff });
 
 for (let i = 1; i < segmentCount; i++) {
     const mesh = new THREE.Mesh(bodyGeometry, bodyMaterial);
