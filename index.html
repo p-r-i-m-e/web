@@ -72,7 +72,7 @@
 
 <!-- 3D Petals Animation Script -->
 <script>
-      // --- 1. Scene, Camera & Renderer Setup --- //
+          // --- 1. Scene, Camera & Renderer Setup --- //
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.z = 5;
@@ -87,28 +87,53 @@ renderer.domElement.style.pointerEvents = 'none';
 renderer.domElement.style.zIndex = '-1';
 document.body.appendChild(renderer.domElement);
 
-// --- 2. ❄️ နှင်းပွင့် / ကြယ်ပွင့်များ ဖန်တီးခြင်း --- //
-const particleCount = 100;
+// --- 2. ❄️ ကြယ်ပွင့်/နှင်းပွင့် Texture ဖန်တီးခြင်း --- //
+function createParticleTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 32;
+    canvas.height = 32;
+    const ctx = canvas.getContext('2d');
+    
+    // ကြယ်ပွင့် လင်းလက်သည့် Gradient ပုံစံ ရေးဆွဲခြင်း
+    const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+    gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+    gradient.addColorStop(0.3, 'rgba(0, 255, 200, 0.8)');
+    gradient.addColorStop(0.8, 'rgba(0, 255, 150, 0.2)');
+    gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 32, 32);
+    
+    const texture = new THREE.Texture(canvas);
+    texture.needsUpdate = true;
+    return texture;
+}
+
+// ❄️ နှင်းပွင့်များ စုစည်းမှု ဖန်တီးခြင်း
+const particleCount = 120;
 const particleGeo = new THREE.BufferGeometry();
 const particleCoords = new Float32Array(particleCount * 3);
 
 for (let i = 0; i < particleCount * 3; i += 3) {
-    particleCoords[i] = (Math.random() - 0.5) * 20;
-    particleCoords[i + 1] = (Math.random() - 0.5) * 20;
+    particleCoords[i] = (Math.random() - 0.5) * 15;
+    particleCoords[i + 1] = (Math.random() - 0.5) * 15;
     particleCoords[i + 2] = (Math.random() - 0.5) * 10;
 }
 
 particleGeo.setAttribute('position', new THREE.BufferAttribute(particleCoords, 3));
+
 const particleMat = new THREE.PointsMaterial({
-    color: 0x00ffcc,
-    size: 0.08,
+    size: 0.25,
+    map: createParticleTexture(),
     transparent: true,
-    opacity: 0.8
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
 });
+
 const particles = new THREE.Points(particleGeo, particleMat);
 scene.add(particles);
 
-// --- 3. 🐍 3D Snake Animation ဖန်တီးခြင်း --- //
+// --- 3. 🐍 3D Snake with Head Animation --- //
 const path = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-4, -1, 1),
     new THREE.Vector3(-1.5, 0.5, 0),
@@ -121,31 +146,83 @@ path.closed = true;
 
 const segmentCount = 35;
 const snakeBody = [];
-const geometry = new THREE.SphereGeometry(0.12, 16, 16);
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff66 });
-const headMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffcc });
 
-for (let i = 0; i < segmentCount; i++) {
-    const mesh = new THREE.Mesh(geometry, i === 0 ? headMaterial : material);
+// မြွေခန္ဓာကိုယ် အရောင် (အစိမ်းရောင်)
+const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff66 });
+const bodyGeometry = new THREE.SphereGeometry(0.12, 16, 16);
+
+// 🐍 မြွေခေါင်း သီးသန့် ဖန်တီးခြင်း (Head Group)
+const headGroup = new THREE.Group();
+
+// ခေါင်းပုံစံ (အနည်းငယ်ရှည်မျောမျောနှင့် ကြီးသော စက်လုံး)
+const headGeo = new THREE.SphereGeometry(0.2, 16, 16);
+headGeo.scale(1.2, 0.8, 1.5); // ခေါင်းပုံစံဖြစ်အောင် ပုံသွင်းခြင်း
+const headMat = new THREE.MeshBasicMaterial({ color: 0x00ffaa });
+const headMesh = new THREE.Mesh(headGeo, headMat);
+headGroup.add(headMesh);
+
+// 👁️ မျက်လုံး ၂ ဖက် ထည့်ခြင်း
+const eyeGeo = new THREE.SphereGeometry(0.04, 8, 8);
+const eyeMat = new THREE.MeshBasicMaterial({ color: 0xffffff }); // မျက်လုံးအဖြူ
+const pupilMat = new THREE.MeshBasicMaterial({ color: 0x000000 }); // မျက်နက်ဝန်း
+
+// ဘယ်ဘက် မျက်လုံး
+const leftEye = new THREE.Mesh(eyeGeo, eyeMat);
+leftEye.position.set(-0.1, 0.08, 0.15);
+const leftPupil = new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 8), pupilMat);
+leftPupil.position.set(-0.1, 0.08, 0.18);
+
+// ညာဘက် မျက်လုံး
+const rightEye = new THREE.Mesh(eyeGeo, eyeMat);
+rightEye.position.set(0.1, 0.08, 0.15);
+const rightPupil = new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 8), pupilMat);
+rightPupil.position.set(0.1, 0.08, 0.18);
+
+headGroup.add(leftEye, leftPupil, rightEye, rightPupil);
+scene.add(headGroup);
+snakeBody.push(headGroup); // ခေါင်းကို ပထမဆုံး Segment အဖြစ် ထည့်မည်
+
+// မြွေခန္ဓာကိုယ် အဆစ်များ ဆက်ရန်
+for (let i = 1; i < segmentCount; i++) {
+    const mesh = new THREE.Mesh(bodyGeometry, bodyMaterial);
     scene.add(mesh);
     snakeBody.push(mesh);
 }
 
-// --- 4. Main Animation Loop (နှစ်ခုလုံးကို တစ်ပြိုင်နက် မောင်းနှင်ခြင်း) --- //
-let progress = 0;
+// 🐍 မြွေ လှည့်ပတ် ရွေ့လျားခြင်း
+    progress += 0.002;
+    if (progress > 1) progress = 0;
 
-function animate() {
-    requestAnimationFrame(animate);
+    for (let i = 0; i < segmentCount; i++) {
+        const segmentProgress = (progress - (i * 0.012) + 1) % 1;
+        const point = path.getPointAt(segmentProgress);
+        
+        snakeBody[i].position.set(point.x, point.y, point.z);
 
-    // ❄️ နှင်းပွင့်များ အောက်သို့ ဖြည်းဖြည်းချင်း ကျဆင်းခြင်း
+        // မြွေခေါင်း (Index 0) ဖြစ်ပါက ရှေ့သို့ ဦးတည်ကြည့်စေခြင်း
+        if (i === 0) {
+            const nextPoint = path.getPointAt((segmentProgress + 0.01) % 1);
+            snakeBody[0].lookAt(nextPoint);
+        } else {
+            const scale = 1 - (i / segmentCount) * 0.6;
+            snakeBody[i].scale.set(scale, scale, scale);
+        }
+    }
+
+    // ❄️ နှင်းပွင့်များ အောက်သို့ ကျဆင်းခြင်းနှင့် ဘေးတိုက် ယိမ်းနွဲ့ခြင်း
     const positions = particles.geometry.attributes.position.array;
-    for (let i = 1; i < particleCount * 3; i += 3) {
-        positions[i] -= 0.008;
-        if (positions[i] < -10) positions[i] = 10;
+    for (let i = 0; i < particleCount * 3; i += 3) {
+        positions[i + 1] -= 0.008; // အောက်သို့ ကျခြင်း
+        positions[i] += Math.sin(positions[i + 1]) * 0.002; // လေတိုးသည့် ပုံစံ ယိမ်းခြင်း
+
+        if (positions[i + 1] < -8) {
+            positions[i + 1] = 8;
+            positions[i] = (Math.random() - 0.5) * 15;
+        }
     }
     particles.geometry.attributes.position.needsUpdate = true;
 
-    // 🐍 မြွေ လမ်းကြောင်းအတိုင်း ရွေ့လျားခြင်း
+    // 🐍 မြွေ လှည့်ပတ် ရွေ့လျားခြင်း
     progress += 0.002;
     if (progress > 1) progress = 0;
 
@@ -162,15 +239,15 @@ function animate() {
     renderer.render(scene, camera);
 }
 
-// Window Resize ဖြစ်ရင် ချိန်ညှိပေးရန်
+// Window Resize ချိန်ညှိခြင်း
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Animation စတင်ပါ
 animate();
+  
 </script>
 </body>
 </html>
