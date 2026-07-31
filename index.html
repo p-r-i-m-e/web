@@ -67,8 +67,9 @@
     <footer>
         <p>&copy; 2026 Feng Yuan.All rights reserved.</p>
     </footer>
-<!-- Three.js CDN -->
+<!-- Three.js & GLTFLoader CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
 <script>
 // --- 1. Scene, Camera & Renderer Setup ---
@@ -86,73 +87,113 @@ renderer.domElement.style.pointerEvents = 'none';
 renderer.domElement.style.zIndex = '9999';
 document.body.appendChild(renderer.domElement);
 
-// --- 2. Snowflake Texture ဖန်တီးခြင်း ---
+// --- 2. Lights ---
+const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+directionalLight.position.set(5, 5, 5);
+scene.add(directionalLight);
+
+// --- 3. Snowflake Particles (နှင်းပွင့်များ) ---
 function createSnowflakeTexture() {
     const canvas = document.createElement('canvas');
-    canvas.width = 64; 
-    canvas.height = 64;
+    canvas.width = 64; canvas.height = 64;
     const ctx = canvas.getContext('2d');
-    ctx.strokeStyle = '#ffffff'; 
-    ctx.lineWidth = 3; 
-    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3; ctx.lineCap = 'round';
     ctx.translate(32, 32);
-    
     for (let i = 0; i < 6; i++) {
-        ctx.beginPath(); 
-        ctx.moveTo(0, 0); ctx.lineTo(0, -24);
-        ctx.moveTo(0, -16); ctx.lineTo(-8, -20); 
-        ctx.moveTo(0, -16); ctx.lineTo(8, -20);
-        ctx.moveTo(0, -10); ctx.lineTo(-6, -14); 
-        ctx.moveTo(0, -10); ctx.lineTo(6, -14);
-        ctx.stroke(); 
-        ctx.rotate(Math.PI / 3);
+        ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -24);
+        ctx.moveTo(0, -16); ctx.lineTo(-8, -20); ctx.moveTo(0, -16); ctx.lineTo(8, -20);
+        ctx.moveTo(0, -10); ctx.lineTo(-6, -14); ctx.moveTo(0, -10); ctx.lineTo(6, -14);
+        ctx.stroke(); ctx.rotate(Math.PI / 3);
     }
     const texture = new THREE.Texture(canvas);
     texture.needsUpdate = true;
     return texture;
 }
 
-// --- 3. Snowflake Particles စနစ် ---
 const particleCount = 80;
 const particleGeo = new THREE.BufferGeometry();
 const particleCoords = new Float32Array(particleCount * 3);
-
 for (let i = 0; i < particleCount * 3; i += 3) {
-    particleCoords[i] = (Math.random() - 0.5) * 16;     // X position
-    particleCoords[i + 1] = (Math.random() - 0.5) * 16; // Y position
-    particleCoords[i + 2] = (Math.random() - 0.5) * 10; // Z position
+    particleCoords[i] = (Math.random() - 0.5) * 16;
+    particleCoords[i + 1] = (Math.random() - 0.5) * 16;
+    particleCoords[i + 2] = (Math.random() - 0.5) * 10;
 }
-
 particleGeo.setAttribute('position', new THREE.BufferAttribute(particleCoords, 3));
-
 const particleMat = new THREE.PointsMaterial({
-    size: 0.4, 
-    map: createSnowflakeTexture(), 
-    transparent: true, 
-    opacity: 0.85, 
-    depthWrite: false
+    size: 0.4, map: createSnowflakeTexture(), transparent: true, opacity: 0.85, depthWrite: false
 });
-
 const particles = new THREE.Points(particleGeo, particleMat);
 scene.add(particles);
 
-// --- 4. Animation Loop (နှင်းပွင့်များ ကြွေကျရန်) ---
+// --- 4. Snake Path (မြွေ သွားမည့် လမ်းကြောင်း) ---
+const path = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-3.5, -1, 3.5),
+    new THREE.Vector3(-1.0, 0.8, 3.5),
+    new THREE.Vector3(1.2, -0.2, 3.5),
+    new THREE.Vector3(3.2, 1.0, 3.5),
+    new THREE.Vector3(1.5, -1.5, 3.5),
+    new THREE.Vector3(-2.0, 0.5, 3.5),
+]);
+path.closed = true;
+
+// --- 5. GLB Snake Model & Animation Mixer ---
+const loader = new THREE.GLTFLoader();
+let snakeModel;
+let mixer; // 🎬 Animation ထိန်းချုပ်ရန်
+const clock = new THREE.Clock();
+
+loader.load('snake.glb', function (gltf) {
+    snakeModel = gltf.scene;
+    snakeModel.scale.set(0.05, 0.05, 0.05); // Size မူတည်ပြီး တိုး/လျှော့ လုပ်ပါ
+    scene.add(snakeModel);
+
+    // 🎬 Model ထဲ ပါလာသည့် မူလ Animation (ကိုယ်လုံးတွန့်တာ) ကို Play ခြင်း
+    if (gltf.animations && gltf.animations.length) {
+        mixer = new THREE.AnimationMixer(snakeModel);
+        const action = mixer.clipAction(gltf.animations[0]);
+        action.play();
+    }
+});
+
+// --- 6. Main Render/Animation Loop ---
+let progress = 0;
+
 function animate() {
     requestAnimationFrame(animate);
 
+    const delta = clock.getDelta();
+
+    // 🎬 GLB Model ရဲ့ နဂို ပါပြီးသား လှုပ်ရှားမှုကို Update လုပ်ခြင်း
+    if (mixer) {
+        mixer.update(delta);
+    }
+
+    // ❄️ နှင်းပွင့်များ Movement
     const positions = particles.geometry.attributes.position.array;
     for (let i = 0; i < particleCount * 3; i += 3) {
-        positions[i + 1] -= 0.005; // နှင်းပွင့် ကျသည့် အရှိန်
-        if (positions[i + 1] < -8) {
-            positions[i + 1] = 8; // အောက်ရောက်ရင် အထက်က ပြန်စရန်
-        }
+        positions[i + 1] -= 0.005;
+        if (positions[i + 1] < -8) positions[i + 1] = 8;
     }
     particles.geometry.attributes.position.needsUpdate = true;
+
+    // 🐍 မြွေ လမ်းကြောင်းအတိုင်း ရွေ့လျားခြင်း
+    if (snakeModel) {
+        progress += 0.0015; // မြွေ သွားမည့် အရှိန်
+        if (progress > 1) progress = 0;
+
+        const currentPoint = path.getPointAt(progress);
+        const nextPoint = path.getPointAt((progress + 0.008) % 1);
+
+        snakeModel.position.set(currentPoint.x, currentPoint.y, currentPoint.z);
+        snakeModel.lookAt(nextPoint);
+    }
 
     renderer.render(scene, camera);
 }
 
-// Screen Size ညှိရန်
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
