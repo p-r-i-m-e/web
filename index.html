@@ -7,12 +7,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-     <!-- 🎵 Online Background Music & Toggle Button -->
+   <!-- 🎵 Background Music (Loop စနစ်ပါပြီး) & Toggle Button -->
 <button id="musicToggleBtn" title="Play/Pause Music">🎵</button>
 
 <audio id="bgMusic" loop>
-    <!-- Online Stream Direct Link -->
-    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
+    <!-- GitHub ပေါ်တင်ထားသည့် သီချင်း File နာမည် -->
+    <source src="song.mp3" type="audio/mpeg">
 </audio>
 <canvas id="petal-canvas"></canvas>
     <!-- Header Section -->
@@ -208,8 +208,8 @@ window.addEventListener('resize', () => {
 });
 
 animate();
-    // ==========================================
-// 2. 🎵 ONLINE AUTO-PLAY BACKGROUND MUSIC
+// ==========================================
+// 2. 🎵 SINGLE SONG AUTO-LOOP MUSIC PLAYER
 // ==========================================
 const music = document.getElementById('bgMusic');
 const musicBtn = document.getElementById('musicToggleBtn');
@@ -223,14 +223,14 @@ function playAudio() {
             musicBtn.classList.add('playing');
         }
     }).catch(error => {
-        console.log("Autoplay blocked. Waiting for click/scroll...");
+        console.log("Waiting for user interaction to autoplay...");
     });
 }
 
-// စာမျက်နှာပွင့်တာနဲ တန်းဖွင့်ကြည့်မည်
+// Webpage ပွင့်တာနဲ့ တန်းဖွင့်ရန် စမ်းကြည့်မည်
 playAudio();
 
-// Browser က Block ထားပါက Screen ပေါ် နှိပ်လိုက်/Scroll လုပ်လိုက်တာနဲ့ အသံတန်းဖွင့်ပေးမည်
+// Autoplay Block ဖြစ်နေပါက Screen ပေါ် နှိပ်လိုက်တာနဲ့ တန်းဖွင့်ပေးမည့် Logic
 const enableAudioOnInteraction = () => {
     if (music.paused) {
         playAudio();
@@ -244,10 +244,10 @@ window.addEventListener('click', enableAudioOnInteraction);
 window.addEventListener('scroll', enableAudioOnInteraction);
 window.addEventListener('touchstart', enableAudioOnInteraction);
 
-// Manual Toggle Button
+// Manual Toggle Button (ဖွင့်/ပိတ် ခလုတ်)
 if (musicBtn) {
     musicBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // Global interaction event ကို မလုပ်စေရန်
+        e.stopPropagation();
         if (music.paused) {
             music.play();
             musicBtn.textContent = '🔊';
