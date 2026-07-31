@@ -26,21 +26,25 @@ body {
     min-height: 100vh;
     margin: 0;
 }
-
-/* --- Cards များကို အလယ်တည့်တည့် ရောက်စေခြင်း --- */
+/* --- Desktop & Mobile Responsive Grid --- */
 .container, .card-container, main {
     display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
+    flex-wrap: wrap !important; /* Card များကို ဘေးချင်းယှဉ်စေရန် */
+    flex-direction: row !important; /* flex-column အစား row သို့ ပြောင်းပါ */
+    align-items: stretch !important;
     justify-content: center !important;
+    gap: 20px !important;
     width: 100% !important;
+    max-width: 1200px !important; /* Container အကျယ်ကို တိုးထားသည် */
+    margin: 0 auto !important;
 }
 
 .card {
-    width: 90% !important;
-    max-width: 700px !important;
-    margin: 20px auto !important;
-    box-sizing: border-box; /* 💥 box-sixing စာလုံးပေါင်း အမှားကိုလည်း ပြင်ပေးထားသည် */
+    flex: 1 1 350px !important; /* မျက်နှာပြင်ပေါ်မူတည်ပြီး အလိုအလျောက် ဘေးချင်းယှဉ်ပါမည် */
+    max-width: 500px !important; /* Card တစ်ခုစီ၏ အကျယ်ဆုံးပမာဏ */
+    width: 100% !important;
+    margin: 10px !important;
+    box-sizing: border-box;
 }
 
 .container {
