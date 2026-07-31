@@ -25,7 +25,20 @@ body {
     min-height: 100vh;
     margin: 0;
 }
+/* --- Cards များကို အလယ်တည့်တည့် ရောက်စေခြင်း --- */
+.container, .card-container, main {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+}
 
+.card {
+    width: 90% !important;
+    max-width: 500px !important;
+    margin: 15px auto !important;
+}
 .container {
     max-width: 1000px;
     margin: 0 auto;
