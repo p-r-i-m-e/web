@@ -183,3 +183,15 @@ footer {
         transform: translateX(15px);  /* ညာဘက်သို့ ၁၅ pixel ရောက်မည် */
     }
 }
+/* Logo နဲ့ Menu ကြား အကွာအဝေး ခွာခြင်း */
+.logo, .nav-logo, header h1, .site-title {
+    margin-bottom: 15px !important; /* 👈 အောက်က Menu နဲ့ 15px ခွာပေးမည် */
+}
+
+/* Navbar ထဲမှာ Header Element များကြား အကွာအဝေး ညှိခြင်း */
+nav, header, .navbar {
+    display: flex !important;
+    flex-direction: column !important; /* ဖုန်းမှာ အပေါ်အောက် တန်းစီမည် */
+    align-items: center !important;
+    gap: 12px !important;              /* Item တစ်ခုနှင့်တစ်ခု ကြား 12px ခွာမည် */
+}
