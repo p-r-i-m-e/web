@@ -86,46 +86,27 @@ renderer.domElement.style.left = '0';
 renderer.domElement.style.pointerEvents = 'none';
 renderer.domElement.style.zIndex = '-1';
 document.body.appendChild(renderer.domElement);
+<script>
+    // ... တခြား Code များ ...
 
-// --- ❄️ ကြယ်/နှင်းပွင့် Particles --- //
-function createParticleTexture() {
-    const canvas = document.createElement('canvas');
-    canvas.width = 32;
-    canvas.height = 32;
-    const ctx = canvas.getContext('2d');
-    const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
-    gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-    gradient.addColorStop(0.3, 'rgba(0, 255, 200, 0.8)');
-    gradient.addColorStop(0.8, 'rgba(0, 255, 150, 0.2)');
-    gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 32, 32);
-    const texture = new THREE.Texture(canvas);
-    texture.needsUpdate = true;
-    return texture;
-}
+    // ❄️ နှင်းပွင့် Shape ဖန်တီးခြင်း
+    const snowflakeShape = new THREE.Shape();
+    const arms = 6;
+    for (let i = 0; i < arms; i++) {
+        const angle = (i / arms) * Math.PI * 2;
+        snowflakeShape.lineTo(Math.cos(angle) * 0.2, Math.sin(angle) * 0.2);
+        snowflakeShape.lineTo(Math.cos(angle + 0.2) * 0.05, Math.sin(angle + 0.2) * 0.05);
+    }
 
-const particleCount = 100;
-const particleGeo = new THREE.BufferGeometry();
-const particleCoords = new Float32Array(particleCount * 3);
+    const geometry = new THREE.ShapeGeometry(snowflakeShape);
 
-for (let i = 0; i < particleCount * 3; i += 3) {
-    particleCoords[i] = (Math.random() - 0.5) * 15;
-    particleCoords[i + 1] = (Math.random() - 0.5) * 15;
-    particleCoords[i + 2] = (Math.random() - 0.5) * 10;
-}
-
-particleGeo.setAttribute('position', new THREE.BufferAttribute(particleCoords, 3));
-const particleMat = new THREE.PointsMaterial({
-    size: 0.25,
-    map: createParticleTexture(),
-    transparent: true,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false
-});
-const particles = new THREE.Points(particleGeo, particleMat);
-scene.add(particles);
-
+    // နှင်းပွင့် အရောင် (အဖြူရောင် ထားချင်ရင် 0xffffff)
+    const material = new THREE.MeshBasicMaterial({
+        color: 0xff0000,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.85
+    });
 // --- 🐍 3D Snake with Head --- //
 const path = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-4, -1, 1),
