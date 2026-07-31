@@ -4,15 +4,16 @@
     padding: 0;
     box-sizing: border-box;
 }
-/* 3D Canvas ကို Background အဖြစ် ထားရှိခြင်း */
+
+/* 3D Canvas ကို Card များ၏ အပေါ်ဆုံးတွင် ထားရှိခြင်း */
 #petal-canvas {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    pointer-events: none; /* Mouse Click များကို အရှေ့က စာသားများဆီ တိုက်ရိုက် ရောက်စေရန် */
-    z-index: -1;          /* 💥 အဓိကပြင်ရမယ့်နေရာ: တန်ဖိုးကို -1 သို့ ပြောင်းပါ */
+    pointer-events: none; /* Mouse Click များကို အနောက်က Card များဆီ တိုက်ရိုက် ရောက်စေရန် */
+    z-index: 9999;        /* 💥 ပြင်ဆင်ပြီး: Card များ၏ အပေါ် ရောက်စေရန် -1 မှ 9999 သို့ ပြောင်းထားသည် */
 }
 
 body {
@@ -25,6 +26,7 @@ body {
     min-height: 100vh;
     margin: 0;
 }
+
 /* --- Cards များကို အလယ်တည့်တည့် ရောက်စေခြင်း --- */
 .container, .card-container, main {
     display: flex !important;
@@ -36,22 +38,25 @@ body {
 
 .card {
     width: 90% !important;
-    max-width: 500px !important;
-    margin: 15px auto !important;
+    max-width: 700px !important;
+    margin: 20px auto !important;
+    box-sizing: border-box; /* 💥 box-sixing စာလုံးပေါင်း အမှားကိုလည်း ပြင်ပေးထားသည် */
 }
+
 .container {
     max-width: 1000px;
     margin: 0 auto;
     padding: 0 20px;
 }
 
-/* Header & Navigation */
+/* Header & Navigation (Canvas အပေါ်တွင် ရှိစေရန် z-index 10000 ထားပေးသည်) */
 header {
     background-color: #000000;
     border-bottom: 1px solid #e0e0e0;
     padding: 20px 0;
     position: sticky;
     top: 0;
+    z-index: 10000 !important;
 }
 
 header .container {
@@ -169,6 +174,7 @@ footer {
     color: #888888;
     font-size: 0.9rem;
 }
+
 /* ဘယ်ညာ လှုပ်ရှားမည့် စာသားအတွက် Animation */
 .moving-text {
     display: inline-block;
@@ -177,27 +183,29 @@ footer {
 
 @keyframes moveLeftRight {
     0% {
-        transform: translateX(-15px); /* ဘယ်ဘက်သို့ ၁၅ pixel ရောက်မည် */
+        transform: translateX(-15px);
     }
     100% {
-        transform: translateX(15px);  /* ညာဘက်သို့ ၁၅ pixel ရောက်မည် */
+        transform: translateX(15px);
     }
 }
+
 /* Logo နဲ့ Menu ကြား အကွာအဝေး ခွာခြင်း */
 .logo, .nav-logo, header h1, .site-title {
-    margin-bottom: 15px !important; /* 👈 အောက်က Menu နဲ့ 15px ခွာပေးမည် */
+    margin-bottom: 15px !important;
 }
 
 /* Navbar ထဲမှာ Header Element များကြား အကွာအဝေး ညှိခြင်း */
 nav, header, .navbar {
     display: flex !important;
-    flex-direction: column !important; /* ဖုန်းမှာ အပေါ်အောက် တန်းစီမည် */
+    flex-direction: column !important;
     align-items: center !important;
-    gap: 12px !important;              /* Item တစ်ခုနှင့်တစ်ခု ကြား 12px ခွာမည် */
+    gap: 12px !important;
 }
+
 /* Scroll ဆွဲရင် စာသား မထပ်စေရန်နှင့် ပုံမှန် အောက်ဆွဲရင် ပျောက်သွားစေရန် */
 .hero, .hero-section, .intro, h1 {
-    position: relative !important; /* fixed သို့မဟုတ် absolute ကို ဖျက်ပစ်မည် */
+    position: relative !important;
     top: auto !important;
     left: auto !important;
     transform: none !important;
@@ -209,6 +217,6 @@ nav, header, .navbar {
 /* Header ကို အပေါ်ဆုံးမှာ ကြည့်ကောင်းအောင် ထားခြင်း */
 header, nav, .navbar {
     position: relative !important;
-    z-index: 10 !important;
+    z-index: 10000 !important;
     background: transparent;
 }
