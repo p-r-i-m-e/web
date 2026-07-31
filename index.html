@@ -149,6 +149,105 @@
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
+    // --- 1. Scene, Camera & Renderer Setup --- //
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 5;
+
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.domElement.style.position = 'fixed';
+renderer.domElement.style.top = '0';
+renderer.domElement.style.left = '0';
+renderer.domElement.style.pointerEvents = 'none';
+renderer.domElement.style.zIndex = '-1';
+document.body.appendChild(renderer.domElement);
+
+// --- 2. ❄️ နှင်းပွင့် / ကြယ်ပွင့်များ ဖန်တီးခြင်း --- //
+const particleCount = 100;
+const particleGeo = new THREE.BufferGeometry();
+const particleCoords = new Float32Array(particleCount * 3);
+
+for (let i = 0; i < particleCount * 3; i += 3) {
+    particleCoords[i] = (Math.random() - 0.5) * 20;
+    particleCoords[i + 1] = (Math.random() - 0.5) * 20;
+    particleCoords[i + 2] = (Math.random() - 0.5) * 10;
+}
+
+particleGeo.setAttribute('position', new THREE.BufferAttribute(particleCoords, 3));
+const particleMat = new THREE.PointsMaterial({
+    color: 0x00ffcc,
+    size: 0.08,
+    transparent: true,
+    opacity: 0.8
+});
+const particles = new THREE.Points(particleGeo, particleMat);
+scene.add(particles);
+
+// --- 3. 🐍 3D Snake Animation ဖန်တီးခြင်း --- //
+const path = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-4, -1, 1),
+    new THREE.Vector3(-1.5, 0.5, 0),
+    new THREE.Vector3(1.5, -0.5, 0.5),
+    new THREE.Vector3(4, 1, -1),
+    new THREE.Vector3(2, -1.5, 1),
+    new THREE.Vector3(-2, 1, -0.5),
+]);
+path.closed = true;
+
+const segmentCount = 35;
+const snakeBody = [];
+const geometry = new THREE.SphereGeometry(0.12, 16, 16);
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff66 });
+const headMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffcc });
+
+for (let i = 0; i < segmentCount; i++) {
+    const mesh = new THREE.Mesh(geometry, i === 0 ? headMaterial : material);
+    scene.add(mesh);
+    snakeBody.push(mesh);
+}
+
+// --- 4. Main Animation Loop (နှစ်ခုလုံးကို တစ်ပြိုင်နက် မောင်းနှင်ခြင်း) --- //
+let progress = 0;
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    // ❄️ နှင်းပွင့်များ အောက်သို့ ဖြည်းဖြည်းချင်း ကျဆင်းခြင်း
+    const positions = particles.geometry.attributes.position.array;
+    for (let i = 1; i < particleCount * 3; i += 3) {
+        positions[i] -= 0.008;
+        if (positions[i] < -10) positions[i] = 10;
+    }
+    particles.geometry.attributes.position.needsUpdate = true;
+
+    // 🐍 မြွေ လမ်းကြောင်းအတိုင်း ရွေ့လျားခြင်း
+    progress += 0.002;
+    if (progress > 1) progress = 0;
+
+    for (let i = 0; i < segmentCount; i++) {
+        const segmentProgress = (progress - (i * 0.012) + 1) % 1;
+        const point = path.getPointAt(segmentProgress);
+        
+        snakeBody[i].position.set(point.x, point.y, point.z);
+
+        const scale = 1 - (i / segmentCount) * 0.5;
+        snakeBody[i].scale.set(scale, scale, scale);
+    }
+
+    renderer.render(scene, camera);
+}
+
+// Window Resize ဖြစ်ရင် ချိန်ညှိပေးရန်
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// Animation စတင်ပါ
+animate();
 </script>
 </body>
 </html>
