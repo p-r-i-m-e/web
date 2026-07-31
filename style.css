@@ -195,3 +195,20 @@ nav, header, .navbar {
     align-items: center !important;
     gap: 12px !important;              /* Item တစ်ခုနှင့်တစ်ခု ကြား 12px ခွာမည် */
 }
+/* Scroll ဆွဲရင် စာသား မထပ်စေရန်နှင့် ပုံမှန် အောက်ဆွဲရင် ပျောက်သွားစေရန် */
+.hero, .hero-section, .intro, h1 {
+    position: relative !important; /* fixed သို့မဟုတ် absolute ကို ဖျက်ပစ်မည် */
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    z-index: 1 !important;
+    margin-top: 20px !important;
+    margin-bottom: 30px !important;
+}
+
+/* Header ကို အပေါ်ဆုံးမှာ ကြည့်ကောင်းအောင် ထားခြင်း */
+header, nav, .navbar {
+    position: relative !important;
+    z-index: 10 !important;
+    background: transparent;
+}
