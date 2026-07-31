@@ -7,6 +7,13 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+     <!-- 🎵 Online Background Music & Toggle Button -->
+<button id="musicToggleBtn" title="Play/Pause Music">🎵</button>
+
+<audio id="bgMusic" loop>
+    <!-- Online Stream Direct Link -->
+    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
+</audio>
 <canvas id="petal-canvas"></canvas>
     <!-- Header Section -->
     <header>
@@ -201,6 +208,58 @@ window.addEventListener('resize', () => {
 });
 
 animate();
+    // ==========================================
+// 2. 🎵 ONLINE AUTO-PLAY BACKGROUND MUSIC
+// ==========================================
+const music = document.getElementById('bgMusic');
+const musicBtn = document.getElementById('musicToggleBtn');
+
+music.volume = 0.3; // အသံပမာဏ (၃၀%)
+
+function playAudio() {
+    music.play().then(() => {
+        if (musicBtn) {
+            musicBtn.textContent = '🔊';
+            musicBtn.classList.add('playing');
+        }
+    }).catch(error => {
+        console.log("Autoplay blocked. Waiting for click/scroll...");
+    });
+}
+
+// စာမျက်နှာပွင့်တာနဲ တန်းဖွင့်ကြည့်မည်
+playAudio();
+
+// Browser က Block ထားပါက Screen ပေါ် နှိပ်လိုက်/Scroll လုပ်လိုက်တာနဲ့ အသံတန်းဖွင့်ပေးမည်
+const enableAudioOnInteraction = () => {
+    if (music.paused) {
+        playAudio();
+    }
+    window.removeEventListener('click', enableAudioOnInteraction);
+    window.removeEventListener('scroll', enableAudioOnInteraction);
+    window.removeEventListener('touchstart', enableAudioOnInteraction);
+};
+
+window.addEventListener('click', enableAudioOnInteraction);
+window.addEventListener('scroll', enableAudioOnInteraction);
+window.addEventListener('touchstart', enableAudioOnInteraction);
+
+// Manual Toggle Button
+if (musicBtn) {
+    musicBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Global interaction event ကို မလုပ်စေရန်
+        if (music.paused) {
+            music.play();
+            musicBtn.textContent = '🔊';
+            musicBtn.classList.add('playing');
+        } else {
+            music.pause();
+            musicBtn.textContent = '🎵';
+            musicBtn.classList.remove('playing');
+        }
+    });
+}
 </script>
+
 </body>
 </html>
